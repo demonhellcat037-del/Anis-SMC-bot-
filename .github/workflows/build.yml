@@ -1,0 +1,32 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Expo and dependencies
+        run: |
+          npm install -g expo-cli
+          npm install
+
+      - name: Build APK
+        run: |
+          npx expo prebuild
+          npx expo build:android -t apk || true
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: anis-smc-bot-apk
+          path: '**/*.apk'
